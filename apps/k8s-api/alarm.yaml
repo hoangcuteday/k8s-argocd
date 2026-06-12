@@ -1,0 +1,63 @@
+# k8s-api/alertmanager-config.yaml
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: api-email-alerts
+  namespace: default
+  labels:
+    release: kube-prometheus-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: '4'
+spec:
+  route:
+    receiver: personal-email
+    groupBy:
+      - alertname
+      - namespace
+      - service
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 1h
+    matchers:
+      - name: severity
+        value: warning
+        matchType: '='
+
+  receivers:
+    - name: personal-email
+      emailConfigs:
+        - to: 'mn456897@gmail.com'
+          from: 'khanhle11342@gmail.com'
+          smarthost: 'smtp.gmail.com:587'
+          authUsername: 'khanhle11342@gmail.com'
+          authPassword:
+            name: alertmanager-smtp
+            key: password
+          requireTLS: true
+          sendResolved: true
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: api-500-alert-rules
+  namespace: default
+  labels:
+    release: kube-prometheus-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: '3'
+spec:
+  groups:
+    - name: api-500-alerts
+      rules:
+        - alert: ApiHas500Requests
+          expr: |
+            sum(increase(http_requests_total{namespace="demo",status=~"5.."}[1m])) > 0
+          for: 0m
+          labels:
+            severity: warning
+            namespace: default
+            service: api-service
+          annotations:
+            summary: 'API has HTTP 5xx errors'
+            description: 'API returned at least one 5xx response in the last 1 minute.'
