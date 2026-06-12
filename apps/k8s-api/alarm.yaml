@@ -33,7 +33,7 @@ spec:
   receivers:
     - name: personal-email
       emailConfigs:
-        - to: 'mn456897@gmail.com'
+        - to: 'khanhle11342@gmail.com'
           from: 'khanhle11342@gmail.com'
           smarthost: 'smtp.gmail.com:587'
           authUsername: 'khanhle11342@gmail.com'
@@ -48,7 +48,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: api-500-alert-rules
-  namespace: monitoring
+  namespace: default
   labels:
     app: api
     release: kube-prometheus-stack
