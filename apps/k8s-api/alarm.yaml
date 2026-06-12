@@ -48,7 +48,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: api-500-alert-rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: api
     release: kube-prometheus-stack
@@ -60,16 +60,11 @@ spec:
       rules:
         - alert: ApiHas5xxResponses
           expr: |
-            sum by (namespace, service) (
-              increase(http_requests_total{
-                namespace="default",
-                service="api-service",
-                status=~"5.."
-              }[1m])
-            ) > 0
+            sum(increase(flask_http_request_total{status=~"5.."}[1m])) > 0
           for: 0m
           labels:
             severity: warning
+            service: api
           annotations:
             summary: 'API returned HTTP 5xx responses'
             description: 'api-service returned at least one HTTP 5xx response in the last 1 minute.'
