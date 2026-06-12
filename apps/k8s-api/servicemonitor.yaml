@@ -5,6 +5,8 @@ metadata:
   namespace: default
   labels:
     release: kube-prometheus-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: '2'
 spec:
   selector:
     matchLabels:
