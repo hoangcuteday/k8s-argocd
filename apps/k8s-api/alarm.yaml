@@ -1,10 +1,11 @@
-# k8s-api/alertmanager-config.yaml
+---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
   name: api-email-alerts
   namespace: default
   labels:
+    app: api
     release: kube-prometheus-stack
   annotations:
     argocd.argoproj.io/sync-wave: '4'
@@ -19,8 +20,14 @@ spec:
     groupInterval: 5m
     repeatInterval: 1h
     matchers:
+      - name: alertname
+        value: ApiHas5xxResponses
+        matchType: '='
       - name: severity
         value: warning
+        matchType: '='
+      - name: service
+        value: api-service
         matchType: '='
 
   receivers:
@@ -43,21 +50,26 @@ metadata:
   name: api-500-alert-rules
   namespace: default
   labels:
+    app: api
     release: kube-prometheus-stack
   annotations:
     argocd.argoproj.io/sync-wave: '3'
 spec:
   groups:
-    - name: api-500-alerts
+    - name: api.http-errors
       rules:
-        - alert: ApiHas500Requests
+        - alert: ApiHas5xxResponses
           expr: |
-            sum(increase(http_requests_total{namespace="demo",status=~"5.."}[1m])) > 0
+            sum by (namespace, service) (
+              increase(http_requests_total{
+                namespace="default",
+                service="api-service",
+                status=~"5.."
+              }[1m])
+            ) > 0
           for: 0m
           labels:
             severity: warning
-            namespace: default
-            service: api-service
           annotations:
-            summary: 'API has HTTP 5xx errors'
-            description: 'API returned at least one 5xx response in the last 1 minute.'
+            summary: 'API returned HTTP 5xx responses'
+            description: 'api-service returned at least one HTTP 5xx response in the last 1 minute.'
