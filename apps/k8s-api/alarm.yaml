@@ -48,7 +48,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: api-500-alert-rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: api
     release: kube-prometheus-stack
