@@ -20,7 +20,9 @@ spec:
                 release: kube-prometheus-stack
             alertmanagerConfigNamespaceSelector:
               matchLabels:
-                kubernetes.io/metadata.name: default
+                kubernetes.io/metadata.name: monitoring
+            alertmanagerConfigMatcherStrategy:
+              type: None
         grafana:
           enabled: true
           adminPassword: "admin"

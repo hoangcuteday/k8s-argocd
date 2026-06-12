@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: api-5xx-analysis
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: '2'
+spec:
+  metrics:
+    - name: api-5xx-rate
+      interval: 30s
+      count: 2
+      failureLimit: 1
+      successCondition: result[0] == 0
+      failureCondition: result[0] > 0
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+          query: |
+            sum(increase(flask_http_request_total{status=~"5.."}[1m])) OR vector(0)

@@ -26,6 +26,9 @@ spec:
       - name: severity
         value: warning
         matchType: '='
+      - name: service
+        value: api-service
+        matchType: '='
 
   receivers:
     - name: personal-email
@@ -57,11 +60,16 @@ spec:
       rules:
         - alert: ApiHas5xxResponses
           expr: |
-            sum(increase(flask_http_request_total{status=~"5.."}[1m])) > 0
+            sum by (namespace, service) (
+              increase(flask_http_request_total{
+                namespace="default",
+                service="api-service",
+                status=~"5.."
+              }[1m])
+            ) > 0
           for: 0m
           labels:
             severity: warning
-            service: api
           annotations:
             summary: 'API returned HTTP 5xx responses'
             description: 'api-service returned at least one HTTP 5xx response in the last 1 minute.'
