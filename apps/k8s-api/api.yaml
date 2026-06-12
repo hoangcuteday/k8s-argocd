@@ -21,14 +21,14 @@ spec:
     spec:
       containers:
         - name: api
-          image: hoangcute19/w9-api:v1
+          image: hoangcute19/w9-api:v2
           ports:
             - containerPort: 8080
           env:
             - name: ERROR_RATE
               value: '0'
             - name: VERSION
-              value: 'v1'
+              value: 'v2'
           readinessProbe:
             httpGet:
               path: /healthz
