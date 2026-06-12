@@ -4,7 +4,7 @@ metadata:
   name: api-5xx-analysis
   namespace: default
   annotations:
-    argocd.argoproj.io/sync-wave: '5'
+    argocd.argoproj.io/sync-wave: '0'
 spec:
   metrics:
     - name: api-5xx-rate
