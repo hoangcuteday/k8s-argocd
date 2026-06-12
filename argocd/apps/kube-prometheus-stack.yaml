@@ -13,6 +13,14 @@ spec:
     chart: kube-prometheus-stack
     helm:
       values: |
+        alertmanager:
+          alertmanagerSpec:
+            alertmanagerConfigSelector:
+              matchLabels:
+                release: kube-prometheus-stack
+            alertmanagerConfigNamespaceSelector:
+              matchLabels:
+                kubernetes.io/metadata.name: default
         grafana:
           enabled: true
           adminPassword: "admin"
