@@ -26,9 +26,6 @@ spec:
       - name: severity
         value: warning
         matchType: '='
-      - name: service
-        value: api-service
-        matchType: '='
 
   receivers:
     - name: personal-email
