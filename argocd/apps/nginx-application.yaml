@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/hoangcuteday/k8s-argocd.git
     targetRevision: main
-    path: apps
+    path: apps/nginx
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
@@ -18,3 +18,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

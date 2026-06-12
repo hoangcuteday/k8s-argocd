@@ -17,7 +17,7 @@ spec:
           enabled: true
           adminPassword: "admin"
           service:
-            type: LoadBalancer
+            type: ClusterIP
         prometheus:
           prometheusSpec:
             serviceMonitorSelectorNilUsesHelmValues: false
@@ -33,3 +33,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
